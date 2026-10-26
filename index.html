@@ -1,0 +1,725 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>FitTrack - Treino, Nutrição & Bioimpedância</title>
+  <meta name="description" content="Aplicativo pessoal de rastreamento de academia, dieta TACO, descanso entre séries e evolução física.">
+  <meta name="theme-color" content="#0a0d12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW falhou:', err));
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- CABEÇALHO SUPERIOR (Estilo da Referência: Avatar + Welcome Back + Nome) -->
+  <header class="app-header">
+    <button class="user-profile-header-wrap" id="btnHeaderProfile" title="Trocar ou Cadastrar Perfil">
+      <div class="user-avatar-top" id="headerProfileAvatar">A</div>
+      <div>
+        <span class="user-welcome-sub">Bem-vindo de volta</span>
+        <div class="user-name-title">
+          <span id="headerProfileName">Atleta</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+    </button>
+
+    <div class="header-actions">
+      <button class="icon-btn-minimal" id="btnSettingsHeader" title="Configurações & Estratégia">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="container">
+
+    <!-- BARRA SELETORA DE DATA -->
+    <div class="date-selector-bar">
+      <button class="date-btn" id="btnPrevDay">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <div class="current-date-label" id="currentDateDisplay">Hoje</div>
+      <button class="date-btn" id="btnNextDay">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- TAB 1: PAINEL DIÁRIO / HOJE -->
+    <section id="tab-dashboard" class="tab-content active">
+
+      <!-- HERO DUAL CARDS (Estilo "My Project / Modern Living Room") -->
+      <div class="hero-dual-grid">
+        <!-- Card Principal de Treino -->
+        <div class="hero-main-card" id="btnGoToWorkoutTab">
+          <div>
+            <span class="hero-tag-pill">Treino Programado</span>
+            <h2 class="hero-workout-title" id="dashTodayWorkoutTitle">Peito & Tríceps</h2>
+          </div>
+          <div class="hero-card-bottom">
+            <span class="hero-meta-pill" id="dashWorkoutStats">5 Exercícios</span>
+            <button class="hero-arrow-btn" title="Iniciar Treino">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card Lateral de Resumo / Estratégia -->
+        <div class="hero-side-card" id="btnOpenStrategyModal">
+          <span class="side-card-label" id="dashStrategyBadge">Estratégia</span>
+          <div>
+            <div class="side-card-metric" id="dashStrategyName">Básico</div>
+            <div class="side-card-sub" id="dashStrategySub">Treino & Peso</div>
+          </div>
+          <div style="font-size:0.7rem; color:var(--accent-sand); font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">
+            Alterar Plano
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD DE ESTIMATIVA E PROGRESSO DA META DE PESO -->
+      <div class="goal-progress-card" id="cardGoalProgression">
+        <div class="goal-card-top">
+          <span class="goal-badge">Progresso da Meta</span>
+          <span class="goal-projection-pill" id="dashGoalProjectionDate">Previsão: Calculando...</span>
+        </div>
+        <div class="goal-weights-row">
+          <div>
+            <div class="goal-main-val"><span id="dashGoalCurrentWeight">--</span> kg</div>
+            <div class="goal-target-sub">Peso atual</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; color: var(--accent-sand);"><span id="dashGoalTargetWeight">--</span> kg</div>
+            <div class="goal-target-sub">Meta pretendida</div>
+          </div>
+        </div>
+        <div class="goal-progress-track">
+          <div class="goal-progress-fill" id="dashGoalProgressFill" style="width: 0%;"></div>
+        </div>
+        <div class="goal-estimation-footer">
+          <span>Faltam <strong id="dashGoalRemainingWeight">-- kg</strong></span>
+          <span>Ritmo: <strong id="dashGoalWeeklyRate">-- kg/sem</strong></span>
+          <span>Estimativa: <strong id="dashGoalEstimatedWeeks">-- semanas</strong></span>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 1: HIDRATAÇÃO DIÁRIA (Invertida: vem primeiro) -->
+      <div class="luxury-card" id="cardHydrationSection">
+        <div class="card-header-clean">
+          <div>
+            <h3 class="card-heading-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-sand)" stroke-width="2.2">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+              </svg>
+              Hidratação Diária
+            </h3>
+            <p class="card-subtext" id="dashWaterTarget">Meta diária: 2.500 ml</p>
+          </div>
+          <span class="hero-meta-pill" id="dashWaterPercentage">0%</span>
+        </div>
+
+        <div class="water-visual-wrap">
+          <div class="water-bottle-glass">
+            <div class="water-fill-level" id="waterLevelFill" style="height: 0%"></div>
+          </div>
+          <div class="water-info-col">
+            <div class="water-metric" id="dashWaterAmount">0 ml</div>
+            <div class="water-quick-buttons">
+              <button class="btn-water" data-ml="250">
+                +250ml
+                <span>Copo</span>
+              </button>
+              <button class="btn-water" data-ml="500">
+                +500ml
+                <span>Garrafa</span>
+              </button>
+              <button class="btn-water" data-ml="1000">
+                +1.000ml
+                <span>Garrafão</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 2: METAS NUTRICIONAIS (Vem depois da hidratação) -->
+      <div id="sectionMacrosDaily" style="margin-top: 10px;">
+        <div class="section-headline">
+          <span>Metas Nutricionais</span>
+        </div>
+
+        <div class="daily-rings-grid">
+          <div class="macro-box">
+            <span class="macro-title">Proteína</span>
+            <span class="macro-val" id="dashProtein">0g</span>
+            <span class="macro-sub" id="dashProteinMeta">de 150g</span>
+            <div class="macro-bar-wrap">
+              <div class="macro-bar" id="barProtein" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="macro-box">
+            <span class="macro-title">Carboidratos</span>
+            <span class="macro-val" id="dashCarbs">0g</span>
+            <span class="macro-sub" id="dashCarbsMeta">de 220g</span>
+            <div class="macro-bar-wrap">
+              <div class="macro-bar" id="barCarbs" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="macro-box">
+            <span class="macro-title">Gorduras</span>
+            <span class="macro-val" id="dashFat">0g</span>
+            <span class="macro-sub" id="dashFatMeta">de 60g</span>
+            <div class="macro-bar-wrap">
+              <div class="macro-bar" id="barFat" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="macro-box">
+            <span class="macro-title">Calorias</span>
+            <span class="macro-val" id="dashCalories">0</span>
+            <span class="macro-sub" id="dashCaloriesMeta">de 2.200 kcal</span>
+            <div class="macro-bar-wrap">
+              <div class="macro-bar" id="barCalories" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 2: DIETA & NUTRIÇÃO (TACO) -->
+    <section id="tab-nutrition" class="tab-content">
+      <div class="glass-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff9100" stroke-width="2.2">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+              </svg>
+              Registro de Alimentação (TACO)
+            </h2>
+            <p class="card-subtitle">Busque alimentos nacionais calibrados ou adicione porções em gramas</p>
+          </div>
+          <button class="btn-primary" id="btnOpenAddFoodModal" style="width: auto; padding: 8px 14px; font-size: 0.85rem;">
+            + Alimento
+          </button>
+        </div>
+
+        <!-- REFEIÇÕES DO DIA -->
+        <div id="mealsContainer">
+          <!-- Gerado via JavaScript: Café da manhã, Almoço, Lanche, Jantar, Ceia -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: TREINOS & CRONOGRAMA -->
+    <section id="tab-workouts" class="tab-content">
+      <div class="glass-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.2">
+                <path d="M18 20V10M12 20V4M6 20v-6"></path>
+              </svg>
+              Cronograma Semanal de Treinos
+            </h2>
+            <p class="card-subtitle">Marque suas séries concluídas e acompanhe cargas e repetições</p>
+          </div>
+          <button class="btn-secondary" id="btnResetDaySets" title="Zerar checkboxes para um novo treino hoje">
+            Resetar Séries
+          </button>
+        </div>
+
+        <!-- Seletor de dia da semana -->
+        <div class="week-day-pill-list" id="weekDayPills">
+          <!-- Gerado dinamicamente: SEG, TER, QUA, QUI, SEX, SÁB, DOM -->
+        </div>
+
+        <!-- Cabeçalho do treino selecionado -->
+        <div class="workout-header-row">
+          <input type="text" id="workoutNameInput" class="workout-title-input" value="Peito & Tríceps" placeholder="Nome do treino...">
+        </div>
+
+        <!-- Lista de exercícios do dia -->
+        <div id="exercisesListContainer"></div>
+
+        <button class="btn-primary" id="btnOpenAddExerciseModal" style="margin-top: 16px;">
+          + Adicionar Exercício neste Treino
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB 4: EVOLUÇÃO & BIOIMPEDÂNCIA -->
+    <section id="tab-evolution" class="tab-content">
+      <div class="glass-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b388ff" stroke-width="2.2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M16 12l-4-4-4 4M12 16V8"></path>
+              </svg>
+              Peso & Bioimpedância
+            </h2>
+            <p class="card-subtitle">Acompanhe seu peso, % de gordura e ganho de massa magra</p>
+          </div>
+          <button class="btn-primary" id="btnOpenAddBioModal" style="width: auto; padding: 8px 14px; font-size: 0.85rem;">
+            + Nova Pesagem
+          </button>
+        </div>
+
+        <!-- Estatísticas resumidas -->
+        <div class="bio-metrics-row">
+          <div class="bio-stat-box">
+            <div class="bio-stat-val" id="bioCurrentWeight">-- kg</div>
+            <div class="bio-stat-label">Peso Atual</div>
+          </div>
+          <div class="bio-stat-box">
+            <div class="bio-stat-val" id="bioCurrentBf">-- %</div>
+            <div class="bio-stat-label">Gordura (BF)</div>
+          </div>
+          <div class="bio-stat-box">
+            <div class="bio-stat-val" id="bioCurrentMuscle">-- %</div>
+            <div class="bio-stat-label">Massa Magra</div>
+          </div>
+        </div>
+
+        <!-- Gráfico de Evolução SVG -->
+        <div class="chart-wrapper" id="bioChartContainer">
+          <!-- Renderizado via JavaScript -->
+        </div>
+
+        <!-- Histórico de registros em lista -->
+        <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; color: var(--text-muted);">
+          Histórico de Pesagens
+        </h3>
+        <div id="bioHistoryList"></div>
+      </div>
+    </section>
+
+    <!-- TAB 5: AJUSTES & SINCRONIZAÇÃO -->
+    <section id="tab-settings" class="tab-content">
+      <div class="glass-card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2.2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Metas do Seu Perfil
+          </h2>
+        </div>
+
+        <form id="profileForm">
+          <div class="form-group">
+            <label class="form-label">Seu Nome / Apelido</label>
+            <input type="text" id="profName" class="form-input" placeholder="Ex: Lucas">
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Altura (cm)</label>
+              <input type="number" id="profHeight" class="form-input" placeholder="175">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Peso Alvo (kg)</label>
+              <input type="number" step="0.5" id="profTargetWeight" class="form-input" placeholder="75">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Meta Calorias (kcal)</label>
+              <input type="number" id="profCalories" class="form-input" placeholder="2200">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Meta Proteína (g)</label>
+              <input type="number" id="profProtein" class="form-input" placeholder="160">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+            <div class="form-group">
+              <label class="form-label">Carbos (g)</label>
+              <input type="number" id="profCarbs" class="form-input" placeholder="230">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gorduras (g)</label>
+              <input type="number" id="profFat" class="form-input" placeholder="60">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Água (ml)</label>
+              <input type="number" id="profWater" class="form-input" placeholder="3000">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="margin-top: 8px;">
+            Salvar Metas
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- NAVEGAÇÃO INFERIOR MOBILE FIRST -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="tab-dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="9"></rect>
+        <rect x="14" y="3" width="7" height="5"></rect>
+        <rect x="14" y="12" width="7" height="9"></rect>
+        <rect x="3" y="16" width="7" height="5"></rect>
+      </svg>
+      <span>Hoje</span>
+    </button>
+
+    <button class="nav-item" data-tab="tab-nutrition">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+        <line x1="6" y1="1" x2="6" y2="4"></line>
+        <line x1="10" y1="1" x2="10" y2="4"></line>
+        <line x1="14" y1="1" x2="14" y2="4"></line>
+      </svg>
+      <span>Dieta</span>
+    </button>
+
+    <button class="nav-item" data-tab="tab-workouts">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"></path>
+      </svg>
+      <span>Treinos</span>
+    </button>
+
+    <button class="nav-item" data-tab="tab-evolution">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+      <span>Evolução</span>
+    </button>
+
+    <button class="nav-item" data-tab="tab-settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+      <span>Ajustes</span>
+    </button>
+  </nav>
+
+  <!-- MODAL: ADICIONAR ALIMENTO -->
+  <div class="modal-overlay" id="modalAddFood">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Adicionar Alimento</h3>
+        <button class="icon-btn modal-close" data-modal="modalAddFood">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Refeição de Destino</label>
+        <select id="foodTargetMealSelect" class="form-select">
+          <option value="breakfast">Café da Manhã</option>
+          <option value="lunch" selected>Almoço</option>
+          <option value="snack">Café da Tarde / Lanche</option>
+          <option value="dinner">Jantar</option>
+          <option value="supper">Ceia</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Buscar Alimento na Tabela TACO / TBCA</label>
+        <input type="text" id="foodSearchInput" class="form-input" placeholder="Ex: Arroz, Feijão, Frango, Ovo, Aveia...">
+        <div class="search-results-list" id="foodSearchResults"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Quantidade em Gramas ou ML</label>
+        <input type="number" id="foodPortionInput" class="form-input" value="100" min="1" step="5">
+      </div>
+
+      <div id="foodPreviewMacros" style="background:var(--bg-surface); padding:12px; border-radius:var(--radius-md); margin-bottom:16px; border:1px solid var(--border-subtle); display:none;">
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;">Macros desta porção:</div>
+        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.85rem;">
+          <span style="color:var(--accent-calories);" id="prevKcal">0 kcal</span>
+          <span style="color:var(--accent-protein);" id="prevProt">0g Prot</span>
+          <span style="color:var(--accent-carbs);" id="prevCarb">0g Carb</span>
+          <span style="color:var(--accent-fat);" id="prevFat">0g Gord</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btnConfirmAddFood">
+        Adicionar à Refeição
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: NOVA PESAGEM / BIOIMPEDÂNCIA -->
+  <div class="modal-overlay" id="modalAddBio">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Pesagem & Bioimpedância</h3>
+        <button class="icon-btn modal-close" data-modal="modalAddBio">✕</button>
+      </div>
+
+      <form id="bioForm">
+        <div class="form-group">
+          <label class="form-label">Data da Medição</label>
+          <input type="date" id="bioDate" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Peso Corporal (kg) *</label>
+          <input type="number" step="0.1" id="bioWeight" class="form-input" placeholder="Ex: 78.4" required>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label">% Gordura (BF)</label>
+            <input type="number" step="0.1" id="bioBf" class="form-input" placeholder="Ex: 19.5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">% Massa Magra</label>
+            <input type="number" step="0.1" id="bioMuscle" class="form-input" placeholder="Ex: 38.0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Observações</label>
+          <input type="text" id="bioNotes" class="form-input" placeholder="Ex: Pós-treino, em jejum, etc.">
+        </div>
+
+        <button type="submit" class="btn-primary">
+          Salvar Medição
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADICIONAR EXERCÍCIO -->
+  <div class="modal-overlay" id="modalAddExercise">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Novo Exercício</h3>
+        <button class="icon-btn modal-close" data-modal="modalAddExercise">✕</button>
+      </div>
+
+      <form id="exerciseForm">
+        <div class="form-group">
+          <label class="form-label">Nome do Exercício</label>
+          <input type="text" id="exName" class="form-input" placeholder="Ex: Supino Reto com Barra" required>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label">N° de Séries</label>
+            <input type="number" id="exSets" class="form-input" value="3" min="1" max="10" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Repetições</label>
+            <input type="number" id="exReps" class="form-input" value="10" min="1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Carga (kg)</label>
+            <input type="number" step="0.5" id="exWeight" class="form-input" value="20">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Link do Vídeo do YouTube (Execução Correta)</label>
+          <input type="url" id="exYoutubeUrl" class="form-input" placeholder="Ex: https://www.youtube.com/watch?v=...">
+          <span style="font-size: 0.72rem; color: var(--text-muted); display:block; margin-top:4px;">Cole o link do YouTube mostrando a técnica correta do movimento.</span>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          Salvar no Treino
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL / OVERLAY: LOGIN OU CADASTRO DE PERFIL (SOMENTE NOME) -->
+  <div class="profile-login-overlay" id="modalProfileLogin">
+    <div class="profile-login-card">
+      <div class="profile-login-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        FitTrack Família
+      </div>
+      <h2 class="profile-login-title">Quem está treinando?</h2>
+      <p class="profile-login-desc">Selecione seu perfil abaixo ou digite seu nome para criar um novo acesso individual.</p>
+
+      <!-- Lista de perfis já cadastrados para toque rápido -->
+      <div class="profiles-chips-list" id="profilesChipsContainer"></div>
+
+      <div class="profile-divider">OU DIGITE SEU NOME</div>
+
+      <!-- Formulário rápido apenas com o Nome -->
+      <form id="profileLoginForm">
+        <div class="form-group" style="text-align:left;">
+          <label class="form-label">Seu Nome</label>
+          <input type="text" id="inputProfileLoginName" class="form-input" placeholder="Ex: Lucas, Pai, Mãe, Carlos..." required autocomplete="off" autofocus>
+        </div>
+        <button type="submit" class="btn-primary" style="font-size: 1rem;">
+          Acessar Perfil
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ONBOARDING & ESTRATÉGIA DE ACOMPANHAMENTO -->
+  <div class="modal-overlay" id="modalOnboardingStrategy">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Sua Estratégia Fitness</h3>
+          <p class="card-subtext">Escolha o nível de acompanhamento e defina sua meta de peso</p>
+        </div>
+      </div>
+
+      <form id="onboardingStrategyForm">
+        <div class="form-group">
+          <label class="form-label">Selecione seu Nível de Acompanhamento</label>
+          <div class="strategy-cards-grid">
+            <!-- Básico -->
+            <div class="strategy-card-item selected" data-strategy="basic">
+              <div class="strategy-header">
+                <span class="strategy-name">
+                  ⚡ Básico
+                </span>
+                <span class="strategy-level-tag">Nível 1</span>
+              </div>
+              <p class="strategy-desc">Você registra apenas os seus treinos do dia e o seu peso.</p>
+              <div class="strategy-features-list">
+                <span class="strategy-feature-pill">✓ Treinos & Séries</span>
+                <span class="strategy-feature-pill">✓ Registro de Peso</span>
+              </div>
+            </div>
+
+            <!-- Médio -->
+            <div class="strategy-card-item" data-strategy="medium">
+              <div class="strategy-header">
+                <span class="strategy-name">
+                  💧 Médio
+                </span>
+                <span class="strategy-level-tag">Nível 2</span>
+              </div>
+              <p class="strategy-desc">Além das anteriores, você registra sua ingestão de água no dia.</p>
+              <div class="strategy-features-list">
+                <span class="strategy-feature-pill">✓ Treinos</span>
+                <span class="strategy-feature-pill">✓ Peso</span>
+                <span class="strategy-feature-pill">✓ Água Diária</span>
+              </div>
+            </div>
+
+            <!-- Avançado -->
+            <div class="strategy-card-item" data-strategy="advanced">
+              <div class="strategy-header">
+                <span class="strategy-name">
+                  🥗 Avançado
+                </span>
+                <span class="strategy-level-tag">Nível 3</span>
+              </div>
+              <p class="strategy-desc">Além das anteriores, você também registra sua alimentação completa com a tabela TACO.</p>
+              <div class="strategy-features-list">
+                <span class="strategy-feature-pill">✓ Treinos</span>
+                <span class="strategy-feature-pill">✓ Peso</span>
+                <span class="strategy-feature-pill">✓ Água</span>
+                <span class="strategy-feature-pill">✓ Dieta & Macros TACO</span>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="selectedStrategyValue" value="basic">
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Sua Idade (anos)</label>
+            <input type="number" id="onboardingAge" class="form-input" placeholder="Ex: 28" required min="10" max="100" value="28">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sua Altura (cm)</label>
+            <input type="number" id="onboardingHeight" class="form-input" placeholder="Ex: 175" required min="100" max="250" value="175">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Peso Atual (kg)</label>
+            <input type="number" step="0.1" id="onboardingCurrentWeight" class="form-input" placeholder="Ex: 78.5" required value="78.0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Meta de Peso Alvo (kg)</label>
+            <input type="number" step="0.1" id="onboardingTargetWeight" class="form-input" placeholder="Ex: 72.0" required value="72.0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Em quanto tempo quer bater a meta? (semanas)</label>
+          <input type="number" id="onboardingTargetWeeks" class="form-input" placeholder="Ex: 12" required min="2" max="100" value="12">
+          <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-top:4px;">
+            Ex: 12 semanas (~3 meses) para cálculo de ritmo e estimativa de progresso.
+          </span>
+        </div>
+
+        <button type="submit" class="btn-primary" style="margin-top: 8px;">
+          Salvar Estratégia e Continuar →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: VÍDEO DO YOUTUBE DO EXERCÍCIO -->
+  <div class="modal-overlay" id="modalExerciseVideo">
+    <div class="modal-card" style="max-width: 560px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="videoModalExerciseTitle">Execução do Exercício</h3>
+          <p class="card-subtext">Vídeo demonstrativo da técnica correta</p>
+        </div>
+        <button class="icon-btn modal-close" data-modal="modalExerciseVideo">✕</button>
+      </div>
+
+      <div class="video-player-container" id="videoEmbedContainer"></div>
+
+      <div style="margin-top: 14px; display:flex; gap:8px;">
+        <input type="url" id="inputEditExerciseVideoUrl" class="form-input" placeholder="Atualizar link do YouTube...">
+        <button class="btn-secondary" id="btnSaveExerciseVideoUrl" style="white-space:nowrap;">Salvar Link</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "fit-track-personal",
+  "version": "1.0.0",
+  "description": "Aplicativo pessoal de rastreamento de treinos, dieta, bioimpedância e descanso",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["fitness", "gym", "workout", "nutrition", "taco", "macros", "pwa"],
+  "author": "",
+  "license": "MIT"
+}

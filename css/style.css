@@ -1,0 +1,1638 @@
+/* ==========================================================================
+   FITTRACK PRO - LUXURY WARM OBSIDIAN & CHAMPAGNE DESIGN SYSTEM
+   Inspirado na referência minimalista premium (DesignNest Interiors)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Paleta Base: Obsidian Quente e Grafite Fosco */
+  --bg-base: #0d0d0c;
+  --bg-surface: #171615;
+  --bg-surface-elevated: #211f1d;
+  --bg-card: #1c1a18;
+  --bg-card-hover: #262320;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-warm: rgba(203, 179, 147, 0.18);
+  --border-focus: rgba(203, 179, 147, 0.6);
+
+  /* Acento de Destaque: Champagne Sand / Warm Tan da Referência */
+  --accent-sand: #cbb393;
+  --accent-sand-light: #ded0bd;
+  --accent-sand-dark: #a48c6f;
+  --accent-sand-glow: rgba(203, 179, 147, 0.22);
+  --accent-sand-gradient: linear-gradient(135deg, #dfcfba 0%, #cbb393 100%);
+
+  /* Cores Complementares Elegantes e Suaves */
+  --accent-calories: #d4a373;
+  --accent-protein: #cbb393;
+  --accent-carbs: #b8977e;
+  --accent-fat: #c07a68;
+  --accent-water: #89b0ae;
+  --accent-success: #cbb393;
+
+  /* Tipografia */
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --text-main: #f5f3ef;
+  --text-muted: #9c9993;
+  --text-subtle: #6b6863;
+
+  /* Dimensões e Raios Arredondados */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  --nav-height: 68px;
+  --transition-quick: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: dark;
+}
+
+/* Reset Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-base);
+  color: var(--text-main);
+  line-height: 1.5;
+  min-height: 100vh;
+  padding-bottom: calc(var(--nav-height) + 36px);
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 15% 10%, rgba(203, 179, 147, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(203, 179, 147, 0.03) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+/* Scrollbar Minimalista */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-sand);
+}
+
+/* ==========================================================================
+   CABEÇALHO NO ESTILO DA REFERÊNCIA (Foto + Welcome Back + Nome)
+   ========================================================================== */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13, 13, 12, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user-profile-header-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-quick);
+}
+.user-profile-header-wrap:hover {
+  opacity: 0.85;
+}
+
+.user-avatar-top {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--accent-sand);
+  color: #121110;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.user-welcome-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  display: block;
+  letter-spacing: 0.2px;
+}
+
+.user-name-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn-minimal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-quick);
+}
+
+.icon-btn-minimal:hover {
+  color: #fff;
+  border-color: var(--accent-sand);
+  background: var(--bg-surface-elevated);
+}
+
+/* ==========================================================================
+   CONTAINER E LAYOUT
+   ========================================================================== */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px 18px 36px;
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.22s ease-out;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   CARTOES E DESIGN LUXURY
+   ========================================================================== */
+.luxury-card, .glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  transition: var(--transition-smooth);
+}
+
+.luxury-card:hover, .glass-card:hover {
+  border-color: rgba(203, 179, 147, 0.25);
+}
+
+.card-header-clean, .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.card-heading-title, .card-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-subtext, .card-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   HERO CARD DUPLO (ESTILO "MY PROJECT / MODERN LIVING ROOM")
+   ========================================================================== */
+.hero-dual-grid {
+  display: grid;
+  grid-template-columns: 1.8fr 1.2fr;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.hero-main-card {
+  background: linear-gradient(145deg, #22201d 0%, #1a1816 100%);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+.hero-main-card:hover {
+  border-color: var(--accent-sand);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px var(--accent-sand-glow);
+}
+
+.hero-tag-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--accent-sand);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.hero-workout-title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.hero-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+
+.hero-meta-pill {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.hero-arrow-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--accent-sand);
+  color: #121110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-quick);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.hero-arrow-btn:hover {
+  transform: scale(1.08);
+  background: var(--accent-sand-light);
+}
+
+.hero-side-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.side-card-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.side-card-metric {
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--accent-sand);
+  line-height: 1.1;
+  margin: 6px 0;
+}
+
+.side-card-sub {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+}
+
+/* ==========================================================================
+   GRID DE AÇÕES RÁPIDAS (ESTILO "MY SPACES" - 4 BOTÕES SQUIRCLE)
+   ========================================================================== */
+.section-headline {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-see-all {
+  font-size: 0.78rem;
+  color: var(--accent-sand);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.spaces-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.space-card-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transition-quick);
+  color: var(--text-muted);
+}
+
+.space-card-btn:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--accent-sand);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.space-card-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+}
+
+.space-card-btn span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ==========================================================================
+   QUICK TOOLS (DUAS CAIXAS COMPACTAS COM ARROW REDONDO)
+   ========================================================================== */
+.quick-tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tool-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: var(--transition-quick);
+  position: relative;
+  min-height: 125px;
+}
+
+.tool-card:hover {
+  background: var(--bg-surface-elevated);
+  border-color: rgba(203, 179, 147, 0.3);
+}
+
+.tool-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.tool-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.tool-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.tool-val {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--accent-sand);
+}
+
+.tool-arrow-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  transition: var(--transition-quick);
+}
+.tool-card:hover .tool-arrow-circle {
+  background: var(--accent-sand);
+  color: #121110;
+}
+
+/* ==========================================================================
+   SELETOR DE DATA ELEGANTE
+   ========================================================================== */
+.date-selector-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  margin-bottom: 18px;
+}
+
+.date-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-quick);
+}
+.date-btn:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.08);
+}
+
+.current-date-label {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #fff;
+}
+
+/* ==========================================================================
+   RESUMO DE MACROS (DIETA & NUTRIÇÃO)
+   ========================================================================== */
+.daily-rings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 480px) {
+  .daily-rings-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.macro-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.macro-box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent-sand);
+}
+
+.macro-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.macro-val {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.macro-sub {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  margin-top: 4px;
+}
+
+.macro-bar-wrap {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.macro-bar {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--accent-sand);
+  transition: width 0.4s ease;
+}
+
+/* ==========================================================================
+   HIDRATAÇÃO
+   ========================================================================== */
+.water-visual-wrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+.water-bottle-glass {
+  position: relative;
+  width: 54px;
+  height: 90px;
+  background: rgba(203, 179, 147, 0.06);
+  border: 1.5px solid rgba(203, 179, 147, 0.35);
+  border-radius: 12px 12px 18px 18px;
+  overflow: hidden;
+}
+
+.water-fill-level {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, #89b0ae, #b4d2d1);
+  transition: height 0.5s ease;
+}
+
+.water-metric {
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.water-quick-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.btn-water {
+  flex: 1;
+  min-width: 65px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: var(--transition-quick);
+}
+
+.btn-water:hover {
+  border-color: var(--accent-sand);
+  background: rgba(203, 179, 147, 0.12);
+}
+
+.btn-water span {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   TREINOS & CRONOGRAMA
+   ========================================================================== */
+.week-day-pill-list {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 18px;
+  scrollbar-width: none;
+}
+.week-day-pill-list::-webkit-scrollbar { display: none; }
+
+.day-pill {
+  flex: 0 0 auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  min-width: 62px;
+  transition: var(--transition-quick);
+}
+
+.day-pill.active {
+  background: rgba(203, 179, 147, 0.15);
+  border-color: var(--accent-sand);
+}
+
+.day-pill .short-name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.day-pill.active .short-name {
+  color: var(--accent-sand);
+}
+
+.day-pill .day-number {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.workout-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.workout-title-input {
+  background: transparent;
+  border: 1px dashed transparent;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  border-radius: var(--radius-xs);
+  padding: 4px 6px;
+  width: 100%;
+}
+.workout-title-input:focus {
+  outline: none;
+  border-color: var(--accent-sand);
+  background: var(--bg-surface);
+}
+
+.exercise-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.exercise-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.exercise-name {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+}
+
+.sets-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sets-table th {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  text-align: center;
+  padding: 4px;
+  font-weight: 600;
+}
+
+.sets-table td {
+  padding: 6px 4px;
+  text-align: center;
+}
+
+.set-input {
+  width: 58px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 6px 4px;
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.88rem;
+}
+.set-input:focus {
+  outline: none;
+  border-color: var(--accent-sand);
+}
+
+.set-check-btn {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-quick);
+}
+
+.set-check-btn.done {
+  background: var(--accent-sand);
+  border-color: var(--accent-sand);
+  color: #121110;
+  font-weight: 800;
+  box-shadow: 0 0 12px var(--accent-sand-glow);
+}
+
+/* ==========================================================================
+   TEMPORIZADOR FLUTUANTE DE DESCANSO (REST TIMER)
+   ========================================================================== */
+.floating-rest-timer {
+  position: fixed;
+  bottom: calc(var(--nav-height) + 24px);
+  right: 18px;
+  z-index: 990;
+  background: rgba(28, 26, 24, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-xl);
+  padding: 10px 16px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.7), 0 0 20px var(--accent-sand-glow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.timer-countdown-display {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--accent-sand);
+  min-width: 65px;
+}
+
+.timer-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timer-action-btn {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-quick);
+}
+.timer-action-btn.active {
+  background: var(--accent-sand);
+  color: #121110;
+  border-color: var(--accent-sand);
+}
+
+/* ==========================================================================
+   REFEIÇÕES & DIETA
+   ========================================================================== */
+.meal-block {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+
+.meal-header {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.meal-name {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #fff;
+}
+
+.meal-macro-summary {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.meal-food-list {
+  padding: 8px 14px;
+}
+
+.food-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 0.84rem;
+}
+.food-row:last-child {
+  border-bottom: none;
+}
+
+.food-macros-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.macro-chip {
+  font-size: 0.68rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.06);
+  color: var(--accent-sand);
+}
+
+.delete-food-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-subtle);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 0.8rem;
+}
+.delete-food-btn:hover {
+  color: #ff5252;
+}
+
+/* ==========================================================================
+   EVOLUÇÃO & BIOIMPEDÂNCIA
+   ========================================================================== */
+.bio-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.bio-stat-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+}
+
+.bio-stat-val {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--accent-sand);
+}
+
+.bio-stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.chart-wrapper {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 10px 10px;
+  margin-bottom: 20px;
+}
+
+.bio-evolution-svg {
+  width: 100%;
+  height: auto;
+}
+
+.chart-dot {
+  fill: var(--accent-sand);
+  stroke: var(--bg-base);
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+.chart-label {
+  fill: #fff;
+  font-size: 10px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.chart-axis-date {
+  fill: #6b6863;
+  font-size: 9px;
+  font-family: var(--font-body);
+}
+
+/* ==========================================================================
+   BOTÃO PRIMARY ESTILO "GET STARTED" DA REFERÊNCIA (WARM CHAMPAGNE PILL)
+   ========================================================================== */
+.btn-primary {
+  background: var(--accent-sand-gradient);
+  color: #121110;
+  border: none;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 13px 22px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  box-shadow: 0 4px 18px var(--accent-sand-glow);
+  transition: var(--transition-quick);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  background: var(--accent-sand-light);
+  box-shadow: 0 8px 25px var(--accent-sand-glow);
+}
+
+.btn-secondary {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 9px 16px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: var(--transition-quick);
+}
+.btn-secondary:hover {
+  border-color: var(--accent-sand);
+  background: var(--bg-surface-elevated);
+}
+
+/* ==========================================================================
+   BOTTOM DOCK NAVIGATION (FLOATING PILL DA REFERÊNCIA)
+   ========================================================================== */
+.bottom-nav {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 36px);
+  max-width: 480px;
+  height: var(--nav-height);
+  background: rgba(22, 20, 19, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 10px;
+  z-index: 900;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.7), 0 0 20px rgba(203, 179, 147, 0.1);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  transition: var(--transition-quick);
+}
+
+.nav-item svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
+.nav-item span {
+  display: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.nav-item.active {
+  background: var(--accent-sand);
+  color: #121110;
+  box-shadow: 0 4px 12px var(--accent-sand-glow);
+}
+
+.nav-item.active svg {
+  stroke: #121110;
+}
+
+.nav-item.active span {
+  display: inline-block;
+}
+
+/* ==========================================================================
+   MODAIS & FORMULÁRIOS
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  display: flex;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-card {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 26px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.85);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  transition: var(--transition-quick);
+}
+.form-input:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--accent-sand);
+  box-shadow: 0 0 12px var(--accent-sand-glow);
+}
+
+/* Lista de busca de alimentos */
+.search-results-list {
+  max-height: 230px;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  margin-top: 8px;
+  background: var(--bg-surface);
+}
+
+.search-item {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: var(--transition-quick);
+}
+.search-item:hover {
+  background: rgba(203, 179, 147, 0.08);
+  border-color: var(--accent-sand);
+}
+.search-item.selected {
+  background: rgba(203, 179, 147, 0.16);
+  border-left: 3px solid var(--accent-sand);
+}
+
+.search-item-info strong {
+  display: block;
+  font-size: 0.88rem;
+  color: #fff;
+}
+.search-item-info span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   MULTI-PERFIL (TELA DE LOGIN MINIMALISTA)
+   ========================================================================== */
+.profile-login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(13, 13, 12, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.profile-login-overlay.open {
+  display: flex;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.profile-login-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 440px;
+  padding: 30px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px var(--accent-sand-glow);
+  text-align: center;
+}
+
+.profile-login-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(203, 179, 147, 0.12);
+  color: var(--accent-sand);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.profile-login-title {
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.profile-login-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+}
+
+.profiles-chips-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.profile-chip-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: var(--transition-quick);
+  min-width: 110px;
+}
+
+.profile-chip-item:hover {
+  border-color: var(--accent-sand);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--accent-sand-glow);
+}
+
+.profile-chip-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #121110;
+  background: var(--accent-sand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.profile-chip-name {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.profile-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--text-subtle);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 18px 0;
+}
+.profile-divider::before, .profile-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.profile-divider:not(:empty)::before { margin-right: .8em; }
+.profile-divider:not(:empty)::after { margin-left: .8em; }
+
+.delete-profile-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-subtle);
+  margin-left: auto;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.delete-profile-btn:hover { color: #ff5252; }
+
+/* ==========================================================================
+   CARD DE ESTIMATIVA E PROGRESSO DA META DE PESO
+   ========================================================================== */
+.goal-progress-card {
+  background: linear-gradient(145deg, #22201d 0%, #1a1816 100%);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.goal-card-top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.goal-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--accent-sand);
+  background: rgba(203, 179, 147, 0.12);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-warm);
+}
+
+.goal-projection-pill {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.4;
+}
+
+.goal-weights-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.goal-main-val {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.goal-target-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.goal-progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.goal-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--accent-sand-gradient);
+  transition: width 0.5s ease;
+  box-shadow: 0 0 10px var(--accent-sand-glow);
+}
+
+.goal-estimation-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+  flex-wrap: wrap;
+}
+
+.goal-estimation-footer span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.goal-estimation-footer strong {
+  color: var(--accent-sand);
+}
+
+/* ==========================================================================
+   SELEÇÃO DE ESTRATÉGIA NO ONBOARDING
+   ========================================================================== */
+.strategy-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 18px 0;
+  text-align: left;
+}
+
+.strategy-card-item {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: var(--transition-quick);
+  position: relative;
+}
+
+.strategy-card-item:hover {
+  border-color: rgba(203, 179, 147, 0.4);
+  background: var(--bg-surface-elevated);
+}
+
+.strategy-card-item.selected {
+  border-color: var(--accent-sand);
+  background: rgba(203, 179, 147, 0.08);
+  box-shadow: 0 0 18px var(--accent-sand-glow);
+}
+
+.strategy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.strategy-name {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.strategy-level-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+.strategy-card-item.selected .strategy-level-tag {
+  background: var(--accent-sand);
+  color: #121110;
+}
+
+.strategy-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.strategy-features-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.strategy-feature-pill {
+  font-size: 0.7rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   VÍDEO DO YOUTUBE NO EXERCÍCIO
+   ========================================================================== */
+.exercise-video-wrap {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-exercise-video {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-sand);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: var(--transition-quick);
+}
+
+.btn-exercise-video:hover {
+  background: rgba(203, 179, 147, 0.12);
+  border-color: var(--accent-sand);
+}
+
+.video-player-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 ratio */
+  height: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-top: 10px;
+  background: #000;
+}
+
+.video-player-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
