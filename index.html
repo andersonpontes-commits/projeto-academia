@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -23,13 +23,14 @@
 <body>
 
   <!-- CABEÇALHO SUPERIOR (Estilo da Referência: Avatar + Welcome Back + Nome) -->
+  <!-- CABEÇALHO SUPERIOR (Estilo da Referência: Avatar + Welcome Back + Nome) -->
   <header class="app-header">
-    <button class="user-profile-header-wrap" id="btnHeaderProfile" title="Trocar ou Cadastrar Perfil">
+    <button class="user-profile-header-wrap" id="btnHeaderProfile" title="Gerenciar Conta / Login">
       <div class="user-avatar-top" id="headerProfileAvatar">A</div>
       <div>
-        <span class="user-welcome-sub">Bem-vindo de volta</span>
+        <span class="user-welcome-sub" id="headerUserWelcome">Bem-vindo</span>
         <div class="user-name-title">
-          <span id="headerProfileName">Atleta</span>
+          <span id="headerProfileName">Entrar / Cadastrar</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5">
             <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
@@ -38,6 +39,13 @@
     </button>
 
     <div class="header-actions">
+      <button class="icon-btn-minimal" id="btnLogoutHeader" title="Sair da Conta" style="display:none; color: var(--text-muted);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+      </button>
       <button class="icon-btn-minimal" id="btnSettingsHeader" title="Configurações & Estratégia">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
@@ -387,6 +395,32 @@
           </button>
         </form>
       </div>
+
+      <!-- BACKUP LOCAL JSON (OPCIONAL) -->
+      <div class="glass-card" style="margin-top: 16px;">
+        <div class="card-header">
+          <h2 class="card-title" style="font-size: 1rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Cópia de Segurança Local (Arquivo JSON)
+          </h2>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+          Seus dados sincronizam automaticamente na sua conta na nuvem. Se preferir, você também pode baixar ou importar um arquivo local.
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn-secondary" id="btnExportBackup" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px;">
+            📥 Baixar Arquivo JSON
+          </button>
+          <label class="btn-secondary" style="flex:1; cursor:pointer; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px;">
+            📤 Importar Arquivo JSON
+            <input type="file" id="inputImportBackup" accept=".json" style="display:none;">
+          </label>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -567,34 +601,62 @@
     </div>
   </div>
 
-  <!-- MODAL / OVERLAY: LOGIN OU CADASTRO DE PERFIL (SOMENTE NOME) -->
+  <!-- MODAL / OVERLAY: LOGIN OU CADASTRO COM E-MAIL E SENHA -->
   <div class="profile-login-overlay" id="modalProfileLogin">
-    <div class="profile-login-card">
+    <div class="profile-login-card" style="position: relative;">
+      <button class="icon-btn modal-close" id="btnCloseAuthModal" style="position: absolute; top: 16px; right: 16px;" title="Fechar">✕</button>
+
       <div class="profile-login-badge">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
         </svg>
-        FitTrack Família
+        Acesso Seguro FitTrack
       </div>
-      <h2 class="profile-login-title">Quem está treinando?</h2>
-      <p class="profile-login-desc">Selecione seu perfil abaixo ou digite seu nome para criar um novo acesso individual.</p>
 
-      <!-- Lista de perfis já cadastrados para toque rápido -->
-      <div class="profiles-chips-list" id="profilesChipsContainer"></div>
+      <!-- Abas para alternar entre Login e Cadastro -->
+      <div class="auth-tabs" style="display:flex; background:rgba(255,255,255,0.06); border-radius:10px; padding:4px; margin-bottom: 18px;">
+        <button type="button" class="auth-tab active" id="tabAuthSignIn" style="flex:1; padding:9px; border-radius:8px; border:none; background:var(--primary); color:#000; font-weight:700; cursor:pointer; font-size:0.85rem; transition:all 0.2s;">
+          Entrar
+        </button>
+        <button type="button" class="auth-tab" id="tabAuthSignUp" style="flex:1; padding:9px; border-radius:8px; border:none; background:transparent; color:var(--text-muted); font-weight:700; cursor:pointer; font-size:0.85rem; transition:all 0.2s;">
+          Criar Conta
+        </button>
+      </div>
 
-      <div class="profile-divider">OU DIGITE SEU NOME</div>
+      <h2 class="profile-login-title" id="authModalTitle">Entrar na sua Conta</h2>
+      <p class="profile-login-desc" id="authModalDesc">Seus treinos e dieta sincronizados com segurança na nuvem.</p>
 
-      <!-- Formulário rápido apenas com o Nome -->
-      <form id="profileLoginForm">
-        <div class="form-group" style="text-align:left;">
-          <label class="form-label">Seu Nome</label>
-          <input type="text" id="inputProfileLoginName" class="form-input" placeholder="Ex: Lucas, Pai, Mãe, Carlos..." required autocomplete="off" autofocus>
+      <!-- Formulário de Autenticação -->
+      <form id="authLoginForm" style="text-align: left;">
+        <!-- Campo Nome (visível no Cadastro) -->
+        <div class="form-group" id="authGroupDisplayName" style="display:none; margin-bottom: 12px;">
+          <label class="form-label">Seu Nome / Apelido</label>
+          <input type="text" id="authInputDisplayName" class="form-input" placeholder="Ex: Lucas">
         </div>
-        <button type="submit" class="btn-primary" style="font-size: 1rem;">
-          Acessar Perfil
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">E-mail</label>
+          <input type="email" id="authInputEmail" class="form-input" placeholder="seu@email.com" required autocomplete="email">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label">Senha</label>
+          <input type="password" id="authInputPassword" class="form-input" placeholder="Mínimo 6 caracteres" required autocomplete="current-password">
+        </div>
+
+        <p id="authErrorMsg" style="color: #f87171; font-size: 0.82rem; margin-bottom: 14px; display: none; line-height: 1.35; background: rgba(248, 113, 113, 0.1); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(248, 113, 113, 0.2);"></p>
+
+        <button type="submit" class="btn-primary" id="btnSubmitAuth" style="font-size: 1rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          Entrar no FitTrack
         </button>
       </form>
+
+      <div style="margin-top: 16px; border-top: 1px solid var(--border-subtle); padding-top: 14px;">
+        <button type="button" id="btnContinueGuest" style="background:none; border:none; color:var(--text-muted); font-size:0.8rem; cursor:pointer; text-decoration:underline;">
+          Continuar sem login (modo offline local)
+        </button>
+      </div>
     </div>
   </div>
 

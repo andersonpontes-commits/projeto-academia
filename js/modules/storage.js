@@ -113,6 +113,9 @@ export const Storage = {
   set(key, value) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
+      if (typeof this.onDataChange === 'function' && !key.startsWith('fit_auth_')) {
+        this.onDataChange();
+      }
       return true;
     } catch (e) {
       console.error(`Erro ao salvar ${key}:`, e);

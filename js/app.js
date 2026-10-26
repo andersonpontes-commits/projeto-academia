@@ -4,6 +4,7 @@ import { Water } from './modules/water.js';
 import { Workouts, getYouTubeEmbedUrl } from './modules/workouts.js';
 import { BodyTracker } from './modules/body.js';
 import { calculateMacros } from './data/taco_foods.js';
+import { Auth } from './modules/auth.js';
 
 // Estado global da aplicação
 const AppState = {
@@ -506,7 +507,6 @@ function renderSettings() {
   document.getElementById('profCarbs').value = profile.dailyCarbs || 230;
   document.getElementById('profFat').value = profile.dailyFat || 60;
   document.getElementById('profWater').value = profile.dailyWater || 3000;
-
 }
 
 // ==========================================
@@ -902,12 +902,54 @@ function init() {
         dailyWater: Number(document.getElementById('profWater').value)
       });
       alert("Metas atualizadas com sucesso!");
+      Auth.scheduleAutoSync();
       renderDashboard();
     });
   }
 
-  // Gerenciamento de Perfis e Onboarding
-  setupProfileManager();
+  // Exportar Backup Local JSON
+  const btnExport = document.getElementById('btnExportBackup');
+  if (btnExport) {
+    btnExport.addEventListener('click', () => {
+      const dataStr = Storage.exportBackup();
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fittrack-backup-${AppState.currentDate}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // Importar Backup Local JSON
+  const inputImport = document.getElementById('inputImportBackup');
+  if (inputImport) {
+    inputImport.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const res = Storage.importBackup(event.target.result);
+        if (res.success) {
+          alert("Backup importado com sucesso!");
+          Auth.scheduleAutoSync();
+          renderAllViews();
+        } else {
+          alert("Erro ao importar arquivo: " + res.error);
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  // Gerenciamento de Autenticação Segura (Firebase Auth)
+  setupAuthManager();
+
+  // Sincronização automática silenciosa em segundo plano sempre que dados forem salvos
+  Storage.onDataChange = () => {
+    Auth.scheduleAutoSync();
+  };
 
   // Inicializa componentes
   setupModals();
@@ -932,136 +974,153 @@ function renderAllViews() {
 }
 
 // ==========================================
-// GESTÃO DE MÚLTIPLOS PERFIS (LOGIN / CADASTRO POR NOME)
+// GESTÃO DE AUTENTICAÇÃO COM E-MAIL E SENHA (FIREBASE AUTH)
 // ==========================================
-function setupProfileManager() {
-  const modalLogin = document.getElementById('modalProfileLogin');
+function setupAuthManager() {
+  const modal = document.getElementById('modalProfileLogin');
   const btnHeader = document.getElementById('btnHeaderProfile');
-  const loginForm = document.getElementById('profileLoginForm');
-  const inputName = document.getElementById('inputProfileLoginName');
+  const btnClose = document.getElementById('btnCloseAuthModal');
+  const btnGuest = document.getElementById('btnContinueGuest');
+  const btnLogout = document.getElementById('btnLogoutHeader');
 
-  // Abre modal de perfil ao clicar no botão do cabeçalho
+  const tabSignIn = document.getElementById('tabAuthSignIn');
+  const tabSignUp = document.getElementById('tabAuthSignUp');
+  const form = document.getElementById('authLoginForm');
+  const titleEl = document.getElementById('authModalTitle');
+  const descEl = document.getElementById('authModalDesc');
+  const groupDisplayName = document.getElementById('authGroupDisplayName');
+  const inputDisplayName = document.getElementById('authInputDisplayName');
+  const inputEmail = document.getElementById('authInputEmail');
+  const inputPassword = document.getElementById('authInputPassword');
+  const btnSubmit = document.getElementById('btnSubmitAuth');
+  const errorMsg = document.getElementById('authErrorMsg');
+
+  let currentMode = 'signin'; // 'signin' | 'signup'
+
+  function setMode(mode) {
+    currentMode = mode;
+    if (errorMsg) errorMsg.style.display = 'none';
+    if (mode === 'signin') {
+      if (tabSignIn) {
+        tabSignIn.style.background = 'var(--primary)';
+        tabSignIn.style.color = '#000';
+      }
+      if (tabSignUp) {
+        tabSignUp.style.background = 'transparent';
+        tabSignUp.style.color = 'var(--text-muted)';
+      }
+      if (titleEl) titleEl.textContent = "Entrar na sua Conta";
+      if (descEl) descEl.textContent = "Seus treinos e dieta sincronizados com segurança na nuvem.";
+      if (groupDisplayName) groupDisplayName.style.display = 'none';
+      if (btnSubmit) btnSubmit.textContent = "Entrar no FitTrack";
+    } else {
+      if (tabSignUp) {
+        tabSignUp.style.background = 'var(--primary)';
+        tabSignUp.style.color = '#000';
+      }
+      if (tabSignIn) {
+        tabSignIn.style.background = 'transparent';
+        tabSignIn.style.color = 'var(--text-muted)';
+      }
+      if (titleEl) titleEl.textContent = "Criar Nova Conta";
+      if (descEl) descEl.textContent = "Crie sua conta com e-mail e senha para salvar tudo na nuvem.";
+      if (groupDisplayName) groupDisplayName.style.display = 'block';
+      if (btnSubmit) btnSubmit.textContent = "Cadastrar e Sincronizar";
+    }
+  }
+
+  if (tabSignIn) tabSignIn.addEventListener('click', () => setMode('signin'));
+  if (tabSignUp) tabSignUp.addEventListener('click', () => setMode('signup'));
+
   if (btnHeader) {
     btnHeader.addEventListener('click', () => {
-      renderProfilesChips();
-      inputName.value = "";
-      modalLogin.classList.add('open');
-      inputName.focus();
+      if (errorMsg) errorMsg.style.display = 'none';
+      if (inputPassword) inputPassword.value = '';
+      if (modal) modal.classList.add('open');
+      if (inputEmail) inputEmail.focus();
     });
   }
 
-  // Submissão do login/cadastro por nome
-  if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+  if (btnClose) btnClose.addEventListener('click', () => modal.classList.remove('open'));
+  if (btnGuest) btnGuest.addEventListener('click', () => modal.classList.remove('open'));
+
+  // Logout
+  if (btnLogout) {
+    btnLogout.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm("Deseja sair da sua conta?")) {
+        Auth.signOut();
+        renderHeaderProfile();
+        alert("Você saiu da conta.");
+      }
+    });
+  }
+
+  // Submissão do Formulário
+  if (form) {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = inputName.value.trim();
-      if (!name) return;
+      const email = inputEmail.value.trim();
+      const password = inputPassword.value;
+      const displayName = inputDisplayName ? inputDisplayName.value.trim() : "";
 
-      const profile = Storage.loginOrCreateByName(name);
-      if (profile) {
-        modalLogin.classList.remove('open');
+      if (errorMsg) errorMsg.style.display = 'none';
+      const origText = btnSubmit.textContent;
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = currentMode === 'signin' ? "Entrando..." : "Criando conta...";
+
+      let res;
+      if (currentMode === 'signin') {
+        res = await Auth.signIn(email, password);
+      } else {
+        res = await Auth.signUp(email, password, displayName);
+      }
+
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = origText;
+
+      if (res.success) {
+        modal.classList.remove('open');
         renderAllViews();
-
-        // Se perfil é novo ou não concluiu a estratégia de acompanhamento
-        if (!profile.hasCompletedOnboarding) {
-          prefillOnboardingModal(profile);
-          openModal('modalOnboardingStrategy');
+        alert(currentMode === 'signin' ? `Bem-vindo de volta!` : `Conta criada com sucesso!`);
+      } else {
+        if (errorMsg) {
+          errorMsg.textContent = res.message;
+          errorMsg.style.display = 'block';
         }
       }
     });
   }
 
-  // Se não houver perfil ativo, abre automaticamente o login
-  const active = Storage.getActiveProfile();
-  if (!active) {
-    const all = Storage.getProfiles();
-    if (all.length > 0) {
-      Storage.setActiveProfileId(all[0].id);
-      renderAllViews();
-    } else {
-      renderProfilesChips();
-      modalLogin.classList.add('open');
-    }
-  }
+  // Se não estiver logado, podemos abrir o modal na primeira vez ou deixar o usuário navegar livremente
 }
 
 function renderHeaderProfile() {
-  const active = Storage.getActiveProfile();
   const avatarEl = document.getElementById('headerProfileAvatar');
   const nameEl = document.getElementById('headerProfileName');
+  const welcomeEl = document.getElementById('headerUserWelcome');
+  const logoutBtn = document.getElementById('btnLogoutHeader');
 
   if (!avatarEl || !nameEl) return;
 
-  if (active) {
-    const initial = active.name.trim().charAt(0).toUpperCase() || 'A';
+  if (Auth.isAuthenticated()) {
+    const user = Auth.getCurrentUser();
+    const displayName = user.displayName || user.email?.split('@')[0] || "Atleta";
+    const initial = displayName.trim().charAt(0).toUpperCase() || 'A';
     avatarEl.textContent = initial;
-    avatarEl.style.backgroundColor = active.color || 'var(--accent-sand)';
-    avatarEl.style.color = '#121212';
-    nameEl.textContent = active.name;
+    avatarEl.style.background = 'linear-gradient(135deg, #cbb393 0%, #a48c6f 100%)';
+    avatarEl.style.color = '#000';
+    if (welcomeEl) welcomeEl.textContent = "Conectado";
+    nameEl.textContent = displayName;
+    if (logoutBtn) logoutBtn.style.display = 'inline-flex';
   } else {
-    avatarEl.textContent = '+';
-    avatarEl.style.backgroundColor = 'var(--bg-surface)';
-    avatarEl.style.color = '#fff';
-    nameEl.textContent = 'Entrar';
+    avatarEl.textContent = '👤';
+    avatarEl.style.background = 'rgba(255,255,255,0.08)';
+    avatarEl.style.color = 'var(--text-muted)';
+    if (welcomeEl) welcomeEl.textContent = "Modo Offline";
+    nameEl.textContent = 'Entrar / Cadastrar';
+    if (logoutBtn) logoutBtn.style.display = 'none';
   }
-}
-
-function renderProfilesChips() {
-  const container = document.getElementById('profilesChipsContainer');
-  if (!container) return;
-  const profiles = Storage.getProfiles();
-  const activeId = Storage.getActiveProfileId();
-
-  if (profiles.length === 0) {
-    container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-subtle);">Nenhum perfil criado ainda. Digite seu nome abaixo para começar!</p>`;
-    return;
-  }
-
-  container.innerHTML = profiles.map(p => {
-    const initial = p.name.trim().charAt(0).toUpperCase() || 'U';
-    const isActive = p.id === activeId;
-    return `
-      <div class="profile-chip-item ${isActive ? 'active' : ''}" data-id="${p.id}" style="${isActive ? 'border-color:var(--accent-sand);' : ''}">
-        <div class="profile-chip-avatar" style="background:${p.color || 'var(--accent-sand)'}; color:#121212; font-weight:700;">
-          ${initial}
-        </div>
-        <div class="profile-chip-name">${p.name}</div>
-        ${profiles.length > 1 ? `<button class="delete-profile-btn" data-delete-id="${p.id}" title="Excluir perfil">✕</button>` : ''}
-      </div>
-    `;
-  }).join('');
-
-  // Clique no chip para trocar de perfil
-  container.querySelectorAll('.profile-chip-item').forEach(chip => {
-    chip.addEventListener('click', (e) => {
-      if (e.target.classList.contains('delete-profile-btn')) return;
-
-      const id = chip.dataset.id;
-      Storage.setActiveProfileId(id);
-      document.getElementById('modalProfileLogin').classList.remove('open');
-      renderAllViews();
-
-      const current = Storage.getActiveProfile();
-      if (current && !current.hasCompletedOnboarding) {
-        prefillOnboardingModal(current);
-        openModal('modalOnboardingStrategy');
-      }
-    });
-  });
-
-  // Excluir perfil
-  container.querySelectorAll('.delete-profile-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const id = btn.dataset.deleteId;
-      const target = profiles.find(p => p.id === id);
-      if (confirm(`Deseja realmente excluir o perfil "${target ? target.name : id}" e todos os seus treinos?`)) {
-        Storage.deleteProfile(id);
-        renderProfilesChips();
-        renderAllViews();
-      }
-    });
-  });
 }
 
 document.addEventListener('DOMContentLoaded', init);
